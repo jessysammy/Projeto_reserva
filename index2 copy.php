@@ -1,29 +1,32 @@
 <?php
 
 
-include('conexão.php');
+    
 
-$sql = "SELECT * FROM reservas ORDER BY id DESC LIMIT 1";
-$result = $mysqli->query($sql);
+    if (isset($_POST['submit']))
+    {
+      // print_r($_POST['nome']);
+      // print_r($_POST['telefone']);
+      // print_r($_POST['data_reserva']);
+      // print_r($_POST['quantidade_pessoas']);
 
+      include_once('conexão.php');
 
-if ($result->num_rows > 0) {
-  // Saída dos dados da última linha
-  while ($row = $result->fetch_assoc()) {
-      $nome = $row["nome"];
-      $data_reserva = $row["data_reserva"];
-      $telefone = $row["telefone"];
-  }
-} else {
-  echo "0 resultados";
-}
+      $nome = $_POST['nome'];
+      $telefone = $_POST['telefone'];
+      $data_reserva = $_POST['data_reserva'];
+      $quantidade_pessoas = $_POST['quantidade_pessoas'];
 
-// Fechar conexão
+      $result = mysqli_query($mysqli, "INSERT INTO reservas(nome, telefone, data_reserva, quantidade_pessoas) VALUES ('$nome', '$telefone', '$data_reserva', '$quantidade_pessoas')");
 
+      header('Location: confirma.php');
+      exit();
 
+    
+    }
+    
+    ?>
 
-
-?>
 
 <!DOCTYPE html>
 <html class="wide wow-animation" lang="br"> 
@@ -40,47 +43,47 @@ if ($result->num_rows > 0) {
     <style>.ie-panel{display: none;background: #212121;padding: 10px 0;box-shadow: 3px 3px 5px 0 rgba(0,0,0,.3);clear: both;text-align:center;position: relative;z-index: 1;} html.ie-10 .ie-panel, html.lt-ie-10 .ie-panel {display: block;}</style>
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 500px;
-            margin: 50px auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        h2 {
-            text-align: center;
-            color: #28a745;
-        }
-        p {
-            text-align: center;
-            font-size: 16px;
-        }
-        .info {
-            font-weight: bold;
-        }
-        .button-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-    </style>
+      body {
+          font-family: Arial, sans-serif;
+          background-color: #f4f4f4;
+          margin: 0;
+          padding: 0;
+      }
+      .container {
+          max-width: 500px;
+          margin: 50px auto;
+          background: #fff;
+          padding: 20px;
+          border-radius: 10px;
+          box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+          text-align: center;
+      }
+      label {
+          display: block;
+          margin: 15px 0 5px;
+      }
+      input, select {
+          width: 100%;
+          padding: 10px;
+          margin: 5px 0 20px;
+          border: 1px solid #ccc;
+          border-radius: 5px;
+      }
+      button {
+          width: 100%;
+          padding: 10px;
+          background-color: #28a745;
+          color: #fff;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+      }
+      button:hover {
+          background-color: #218838;
+      }
+  </style>
   </head>
   <body>
     <div class="ie-panel"><a href="http://windows.microsoft.com/en-US/internet-explorer/"><img src="images/ie8-panel/warning_bar_0000_us.jpg" height="42" width="820" alt="You are using an outdated browser. For a faster, safer browsing experience, upgrade for free today."></a></div>
@@ -89,7 +92,7 @@ if ($result->num_rows > 0) {
         <div class="cssload-container">
           <div class="cssload-speeding-wheel"></div>
         </div>
-        <p>Loading...</p>
+      
       </div>
     </div>
     <div class="page">
@@ -112,9 +115,9 @@ if ($result->num_rows > 0) {
                     <!-- RD Navbar Nav-->
                     <ul class="rd-navbar-nav">
                       
-                    </ul><a class="button button-white button-sm" href="#">Reserve Agora</a>
+                    </ul>
                   </div>
-                </div><a class="button button-white button-sm" href="#">Reserve Agora</a>
+                </div>
               </div>
             </div>
           </nav>
@@ -124,20 +127,38 @@ if ($result->num_rows > 0) {
       <section class="section section-lg section-main-bunner section-main-bunner-filter text-center">
         <div class="main-bunner-img" style="background-image: url(&quot;images/bg-bunner-2.png&quot;); background-size: cover;"></div>
         <div class="main-bunner-inner">
-          
+          <div class="container">
+            <div class="box-default">
+              <h1 class="box-default-title"></h1>
+              <div class="box-default-decor"></div>
+              <p class="big box-default-text"></p>
+            </div>
+          </div>
         </div>
       </section>
       <div class="bg-gray-1">
         <section class="section-transform-top">
-          
-        <div class="container">
-        <h2>Reserva Confirmada!</h2>
-                <p>Obrigado, <span class="info"><?php echo htmlspecialchars($nome); ?></span>! Sua reserva foi confirmada para o dia <span class="info"><?php echo htmlspecialchars($data_reserva); ?></span>.</p>
-                <p>Um SMS será enviado para o número <span class="info"><?php echo htmlspecialchars($telefone); ?></span> com mais detalhes.</p>
-                <p>Estamos ansiosos para recebê-lo(a)!</p>
-                <div class="button-container">
-            <button onclick="window.print()">Imprimir Confirmação</button>
-      
+          <div class="container">
+            
+              <div class="container">
+                <h3>Informações do Cliente</h3>
+                <form action="index2 copy.php" method="POST">
+                    <label for="nome">Nome:</label>
+                    <input type="text" id="nome" name="nome" placeholder="Jessica" required>
+        
+                    <label for="telefone">Número de Telefone:</label>
+                    <input type="tel" id="telefone" name="telefone" placeholder="(00) XXXXX-01010 " required>
+        
+                    <label for="data_reserva">Data:</label>
+                    <input type="date" id="nome" name="data_reserva" placeholder="10/10/2024" required>
+        
+                    <label for="quantidade_pessoas">Numero de Pessoas:</label>
+                    <input type="int" id="nome" name="quantidade_pessoas" placeholder="5" required>
+                    <button type="submit" name="submit" id="submit">Confirma</button>
+                </form>
+            
+               
+               
             </div>
           </div>
         </section>

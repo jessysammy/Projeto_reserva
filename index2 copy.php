@@ -1,31 +1,61 @@
 <?php
+// Conectar ao banco de dados
+include_once('conexão.php');
 
+// Consultar a última reserva inserida
+$query = "SELECT * FROM reservas ORDER BY id DESC LIMIT 1";
+$result = mysqli_query($mysqli, $query);
 
-    
+// Verificar se encontrou algum registro
+if ($result && mysqli_num_rows($result) > 0) {
+    $row = mysqli_fetch_assoc($result);
 
-    if (isset($_POST['submit']))
-    {
-      // print_r($_POST['nome']);
-      // print_r($_POST['telefone']);
-      // print_r($_POST['data_reserva']);
-      // print_r($_POST['quantidade_pessoas']);
+    // Atribuir os valores da última reserva a variáveis
+    $last_id = $row['id'];
+    $nome = $row['nome'];
+    $telefone = $row['telefone'];
+    $data_reserva = $row['data_reserva'];
+    $quantidade_pessoas = $row['quantidade_pessoas'];
+} else {
+    // Caso não haja nenhum registro, inicializar os campos como vazios
+    $last_id = null;
+    $nome = '';
+    $telefone = '';
+    $data_reserva = '';
+    $quantidade_pessoas = '';
+}
 
-      include_once('conexão.php');
+// Verificar se o formulário foi enviado
+if (isset($_POST['submit'])) {
+    // Capturar os dados do formulário
+    $nome_novo = $_POST['nome'];
+    $telefone_novo = $_POST['telefone'];
+    $data_reserva_novo = $_POST['data_reserva'];
+    $quantidade_pessoas_novo = $_POST['quantidade_pessoas'];
 
-      $nome = $_POST['nome'];
-      $telefone = $_POST['telefone'];
-      $data_reserva = $_POST['data_reserva'];
-      $quantidade_pessoas = $_POST['quantidade_pessoas'];
-
-      $result = mysqli_query($mysqli, "INSERT INTO reservas(nome, telefone, data_reserva, quantidade_pessoas) VALUES ('$nome', '$telefone', '$data_reserva', '$quantidade_pessoas')");
-
-      header('Location: confirma.php');
-      exit();
-
-    
+    if ($last_id) {
+        // Se já houver um registro, atualize o último registro
+        $result = mysqli_query($mysqli, 
+            "UPDATE reservas 
+            SET nome='$nome_novo', telefone='$telefone_novo', data_reserva='$data_reserva_novo', quantidade_pessoas='$quantidade_pessoas_novo' 
+            WHERE id='$last_id'");
+    } else {
+        // Se não houver registro, insira um novo
+        $result = mysqli_query($mysqli, 
+            "INSERT INTO reservas(nome, telefone, data_reserva, quantidade_pessoas) 
+            VALUES ('$nome_novo', '$telefone_novo', '$data_reserva_novo', '$quantidade_pessoas_novo')");
     }
-    
-    ?>
+
+    // Verificar se a operação foi bem-sucedida e redirecionar
+    if ($result) {
+        // Redirecionar para a página confirma.php
+        header('Location: confirma.php');
+        exit(); // Certifique-se de que o script seja finalizado após o redirecionamento
+    } else {
+        echo "Erro ao processar os dados. Tente novamente.";
+    }
+}
+?>
 
 
 <!DOCTYPE html>
@@ -138,29 +168,25 @@
       </section>
       <div class="bg-gray-1">
         <section class="section-transform-top">
-          <div class="container">
+
+        <div class="container">
+        <h3>Informações do Cliente</h3>
+        <form action="index2 copy.php" method="POST">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" name="nome" value="<?php echo isset($nome) ? $nome : ''; ?>" placeholder="Jessica" required>
             
-              <div class="container">
-                <h3>Informações do Cliente</h3>
-                <form action="index2 copy.php" method="POST">
-                    <label for="nome">Nome:</label>
-                    <input type="text" id="nome" name="nome" placeholder="Jessica" required>
-        
-                    <label for="telefone">Número de Telefone:</label>
-                    <input type="tel" id="telefone" name="telefone" placeholder="(00) XXXXX-01010 " required>
-        
-                    <label for="data_reserva">Data:</label>
-                    <input type="date" id="nome" name="data_reserva" placeholder="10/10/2024" required>
-        
-                    <label for="quantidade_pessoas">Numero de Pessoas:</label>
-                    <input type="int" id="nome" name="quantidade_pessoas" placeholder="5" required>
-                    <button type="submit" name="submit" id="submit">Confirma</button>
-                </form>
+            <label for="telefone">Número de Telefone:</label>
+            <input type="tel" id="telefone" name="telefone" value="<?php echo isset($telefone) ? $telefone : ''; ?>" placeholder="(00) XXXXX-01010" required>
             
-               
-               
-            </div>
-          </div>
+            <label for="data_reserva">Data:</label>
+            <input type="date" id="data_reserva" name="data_reserva" value="<?php echo isset($data_reserva) ? $data_reserva : ''; ?>" required>
+            
+            <label for="quantidade_pessoas">Número de Pessoas:</label>
+            <input type="int" id="quantidade_pessoas" name="quantidade_pessoas" value="<?php echo isset($quantidade_pessoas) ? $quantidade_pessoas : ''; ?>" required>
+            
+            <button type="submit" name="submit" id="submit">Confirmar</button>
+        </form>
+    </div>
         </section>
        
       <footer class="section footer-minimal context-dark">

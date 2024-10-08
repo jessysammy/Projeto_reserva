@@ -1,3 +1,25 @@
+<?php
+    // Incluindo o arquivo de conexão com o banco de dados
+    include_once('conexão.php');
+
+    // Verificando se o formulário foi enviado
+    if (isset($_POST['submit']))
+    {
+        // Coletando os dados do formulário
+        $nome = $_POST['name'];
+        $telefone = $_POST['phone'];
+        $data_reserva = $_POST['date'];
+        $quantidade_pessoas = $_POST['num_people'];
+
+        // Inserindo os dados na tabela 'reservas'
+        $result = mysqli_query($mysqli, "INSERT INTO reservas(nome, telefone, data_reserva, quantidade_pessoas) VALUES ('$nome', '$telefone', '$data_reserva', '$quantidade_pessoas')");
+
+        // Redirecionando para uma página de confirmação
+        header('Location: index2 copy.php');
+        exit();
+    }
+?>
+
 <!DOCTYPE html>
 <html class="wide wow-animation" lang="br"> 
   <head>
@@ -69,42 +91,46 @@
         <section class="section-transform-top">
           <div class="container">
             <div class="box-booking">
-              <form class="rd-form rd-mailform booking-form">
-                <div>
-                  <p class="booking-title">Nome</p>
-                  <div class="form-wrap">
-                    <input class="form-input" id="booking-name" type="text" name="name" data-constraints="@Required">
-                    <label class="form-label" for="booking-name">Seu nome</label>
-                  </div>
-                </div>
-                <div>
-                  <p class="booking-title">Telefone</p>
-                  <div class="form-wrap">
-                    <input class="form-input" id="booking-phone" type="text" name="phone" data-constraints="@Numeric">
-                    <label class="form-label" for="booking-phone">Seu numero</label>
-                  </div>
-                </div>
-                <div>
-                  <p class="booking-title">Data</p>
-                  <div class="form-wrap form-wrap-icon"><span class="icon mdi mdi-calendar-text"></span>
-                    <input class="form-input" id="booking-date" type="text" name="date" data-constraints="@Required" data-time-picker="date">
-                  </div>
-                </div>
-                <div>
-                  <p class="booking-title">Numero de Pessoas</p>
-                  <div class="form-wrap">
-                    <select data-placeholder="2">
-                      <option label="placeholder"></option>
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                      <option>4</option>
-                      <option>5</option>
-                      <option>6</option>
-                      <option>7</option>
-                    </select>
-                  </div>
-                </div>
+            <form class="rd-form rd-mailform booking-form" action="" method="POST">
+  <div>
+    <p class="booking-title">Nome</p>
+    <div class="form-wrap">
+      <input class="form-input" id="booking-name" type="text" name="name" data-constraints="@Required">
+      <label class="form-label" for="booking-name">Seu nome</label>
+    </div>
+  </div>
+  <div>
+    <p class="booking-title">Telefone</p>
+    <div class="form-wrap">
+      <input class="form-input" id="booking-phone" type="text" name="phone" data-constraints="@Numeric">
+      <label class="form-label" for="booking-phone">Seu numero</label>
+    </div>
+  </div>
+  <div>
+    <p class="booking-title">Data</p>
+    <div class="form-wrap form-wrap-icon"><span class="icon mdi mdi-calendar-text"></span>
+      <input class="form-input" id="booking-date" type="date" name="date" data-constraints="@Required" data-time-picker="date">
+    </div>
+  </div>
+  <div>
+    <p class="booking-title">Numero de Pessoas</p>
+    <div class="form-wrap">
+      <select name="num_people" data-placeholder="2">
+        <option label="placeholder"></option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+        <option value="6">6</option>
+        <option value="7">7</option>
+      </select>
+    </div>
+  </div>
+  <div>
+    <button class="button button-lg button-gray-600" type="submit" name="submit">Verificar</button>
+  </div>
+</form>
                 <div>
                   <button class="button button-lg button-gray-600" type="submit">Verificar</button>
                 </div>
